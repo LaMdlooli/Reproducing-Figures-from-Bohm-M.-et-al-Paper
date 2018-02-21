@@ -1,25 +1,31 @@
 #Reproducing data from the paper Rapoport's rule and determinants of species range size in snakes
 
-#Library----------------------------------------------------------
+#Library------------------------------------------------------------------------------------
 library(ggplot2)
 library(tidyverse)
 
-#Read Data------------------------------------------------------------------------
+#Read Data----------------------------------------------------------------------------------
 Species_range <- read.csv("./Snake_data/species_range.csv")
 
-#Plots-----------------------------------------------------------
-#Reproducing sub figures a,b, and d from figure 1
-#fig 1a
+#Plots--------------------------------------------------------------------------------------
+
+#Reproducing figure 1a,b, and d
+#fig 1a----------------------------------------------------------------
+
 Species_range$area <- exp(Species_range$log_area) #convert log area to area
-fig_1a<- hist(Species_range$area, xlab="area (square km)", main = "Frequency of range sizes across species")
+fig_1a<- hist(Species_range$area, xlab="area (sq km)", main = "Frequency of range sizes across species")
 fig_1a
 #hist with internal conversion of log area to area
-hist(exp(Species_range$log_area), xlab="area (square km)", main="Frequency of range sizes across species") 
+hist(exp(Species_range$log_area), xlab="area (sq km)", main="Frequency of range sizes across species") 
 
-#fig 1b
-fig_1b <- hist(Species_range$log_area, xlab="log area (square km)", main="Frequency of log range sizes across species")
 
-#fig 1d
+#fig 1b----------------------------------------------------------------
+
+fig_1b <- hist(Species_range$log_area, xlab="log area (sq km)", main="Frequency of log range sizes across species")
+
+
+#fig 1d---------------------------------------------------------------
+
 cutpoints <- c(seq(-40,50, by=5)) #define ylim range
 
 Species_range$mid_lat_bins<-cut(Species_range$mid_latitude,cutpoints,right = FALSE) #cut function divides range of x into intervals as defined by cutpoints and mid_lat
@@ -46,10 +52,43 @@ barplot(MidLat_Range_Area$median_range_area,
 
 #print sub figures a,b, and d of figure 1 onto pdf
 pdf("./Plots/Bohm_Figure1.pdf")
-hist(Species_range$area, xlab="area (square km)", main = "Frequency of range sizes across species")
-hist(Species_range$log_area, xlab="log area (square km)", main="Frequency of log range sizes across species")
+hist(Species_range$area, xlab="area (sq km)", main = "Frequency of range sizes across species")
+hist(Species_range$log_area, xlab="log area (sq km)", main="Frequency of log range sizes across species")
 fig_1d
 dev.off()
 
 
-#
+#Reproducing figure 2a-c
+#fig_2a-------------------------------------------------------------------------
+Species_range$sqrt_no_habitats <- sqrt(Species_range$No_habitats)
+fig_2a_reg <- lm(log_area~sqrt_no_habitats, data=Species_range)
+fig_2a <- plot(log_area~sqrt_no_habitats, data=Species_range, pch=20, 
+               xlab="Sqrt Habitat Breath (No. of Habitats)", ylab="Log range size (sq km)")
+abline(fig_2a_reg) #add regression line for fig_2a
+
+#fig_2b-------------------------------------------------------------------------
+fig_2b_reg <- lm(log_area~logSVL, data=Species_range)
+fig_2b <- plot(log_area~logSVL, data=Species_range, pch=20,
+               xlab="Log body size (max SVL)", ylab="Log range size (sq km)")
+abline(fig_2b_reg)
+
+#fig_2c------------------------------------------------------------------------
+Species_range$sqrt_Altitude_AAD <- sqrt(Species_range$Altitude_AAD)
+fig_2c_reg <- lm(log_area~sqrt_Altitude_AAD, data=Species_range)
+fig_2c <- plot(log_area~sqrt_Altitude_AAD, data=Species_range, pch=20,
+               xlab="Sqrt altitude (AAD)", ylab="Log range size (sq km)")
+abline(fig_2c_reg)
+
+#Print figure 2a-c onto a pdf
+pdf("./Plots/Bohm_figure2.pdf")
+fig_2a <- plot(log_area~sqrt_no_habitats, data=Species_range, pch=20, 
+               xlab="Sqrt Habitat Breath (No. of Habitats)", ylab="Log range size (sq km)")
+abline(fig_2a_reg)
+fig_2b <- plot(log_area~logSVL, data=Species_range, pch=20,
+               xlab="Log body size (max SVL)", ylab="Log range size (sq km)")
+abline(fig_2b_reg)
+fig_2c <- plot(log_area~sqrt_Altitude_AAD, data=Species_range, pch=20,
+               xlab="Sqrt altitude (AAD)", ylab="Log range size (sq km)")
+abline(fig_2c_reg)
+dev.off()
+
