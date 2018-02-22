@@ -92,3 +92,14 @@ fig_2c <- plot(log_area~sqrt_Altitude_AAD, data=Species_range, pch=20,
 abline(fig_2c_reg)
 dev.off()
 
+#Ecoregions-----------------------------------------------------------------------
+#what is the mean number of ecoregions?
+summary(Species_range$no_ecoregions)
+#the mean number of ecoregions was determined to be 12.52, therefore generalists will have regions
+#greater than the mean.
+Species_range$Ecoregion_type[Species_range$no_ecoregions>12.52] <- "Generalist"
+Species_range$Ecoregion_type[Species_range$no_ecoregions<=12.52] <- "Specialist"
+
+#Figure 4-------------------------------------------------------------------------
+#reproducing figure 4, with color adjusted by Ecoregion_type
+fig_4_reg <- 
