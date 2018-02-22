@@ -3,6 +3,7 @@
 #Library------------------------------------------------------------------------------------
 library(ggplot2)
 library(tidyverse)
+library(RColorBrewer)
 
 #Read Data----------------------------------------------------------------------------------
 Species_range <- read.csv("./Snake_data/species_range.csv")
@@ -99,7 +100,16 @@ summary(Species_range$no_ecoregions)
 #greater than the mean.
 Species_range$Ecoregion_type[Species_range$no_ecoregions>12.52] <- "Generalist"
 Species_range$Ecoregion_type[Species_range$no_ecoregions<=12.52] <- "Specialist"
+Species_range$Ecoregion_type <- as.factor(Species_range$Ecoregion_type)
 
 #Figure 4-------------------------------------------------------------------------
 #reproducing figure 4, with color adjusted by Ecoregion_type
-fig_4_reg <- 
+cols <- brewer.pal(n=4, name="Set2")
+cols_ecoregion <- cols[Species_range$Ecoregion_type] #set color
+Species_range$Sqrt_YearsDescrip <- sqrt(Species_range$Years_descrip) #change years described to sqrt
+fig_4_reg <- lm(Sqrt_YearsDescrip~log_area, data=Species_range)
+fig_4 <- plot(Sqrt_YearsDescrip~log_area, data=Species_range, pch=20, col=cols_ecoregion,
+              xlab="Log range size (sq km)", ylab="Sqrt years since description")
+abline(fig_4_reg)
+
+#print figure 4 onto pdf to save in figs folder
