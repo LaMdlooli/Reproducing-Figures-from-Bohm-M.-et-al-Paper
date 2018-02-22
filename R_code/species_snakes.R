@@ -112,7 +112,7 @@ fig_4 <- plot(Sqrt_YearsDescrip~log_area, data=Species_range, pch=20, col=cols_e
               xlab="Log range size (sq km)", ylab="Sqrt years since description")
 abline(fig_4_reg)
 
-#print figure 4 onto pdf to save in figs folder
+#print figure 4 onto pdf to save in Plots folder
 pdf("./Plots/Bohm_figure4.pdf")
 fig_4 <- plot(Sqrt_YearsDescrip~log_area, data=Species_range, pch=20, col=cols_ecoregion,
               xlab="Log range size (sq km)", ylab="Sqrt years since description")
